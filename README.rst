@@ -13,7 +13,7 @@ CMakeDoxyXML
 ==========
 .. image:: https://travis-ci.org/vovkos/cmakedoxyxml.svg?branch=master
 	:target: https://travis-ci.org/vovkos/cmakedoxyxml
-.. image:: https://ci.appveyor.com/api/projects/status/oo9ql7v3gbvkxh3l?svg=true
+.. image:: https://ci.appveyor.com/api/projects/status/sldqdlltvcbmht7b?svg=true
 	:target: https://ci.appveyor.com/project/vovkos/cmakedoxyxml
 
 Abstract
@@ -49,6 +49,7 @@ Please note, that in *direct mode* only a small subset of Doxygen `special comma
 * ``\ingroup``
 * ``\title``
 * ``\brief``
+* ``\details``
 * ``\see`` = ``\sa``
 
 If you use **reStructuredText** inside doxy-comments, you don't really need any of the Doxygen formatting commands -- in this case the *direct mode* is the right choice. However, if you *do need* advanced Doxygen commands, then you can use Doxygen as the main processor and ``cmakedoxyxml`` as a *filter* as described in the next session.
