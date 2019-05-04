@@ -14,53 +14,6 @@
 #include "Lexer.h"
 
 class Module;
-struct Table;
-
-//..............................................................................
-
-enum ValueKind
-{
-	ValueKind_Empty,
-	ValueKind_Expression,
-	ValueKind_Constant,
-	ValueKind_Variable,
-};
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-struct Value
-{
-	Token::Pos m_firstTokenPos;
-	Token::Pos m_lastTokenPos;
-	ValueKind m_valueKind;
-	sl::StringRef m_source;
-
-	Value()
-	{
-		m_valueKind = ValueKind_Empty;
-	}
-
-	bool
-	isEmpty() const
-	{
-		return m_valueKind == ValueKind_Empty;
-	}
-
-	void
-	clear();
-
-	void
-	setFirstToken(
-		const Token::Pos& pos,
-		ValueKind valueKind = ValueKind_Expression
-		);
-
-	void
-	appendSource(
-		const Token::Pos& pos,
-		ValueKind valueKind = ValueKind_Expression
-		);
-};
 
 //..............................................................................
 
@@ -127,9 +80,6 @@ struct ModuleItem: sl::ListLink
 
 struct Variable: ModuleItem
 {
-	Value m_index;
-	Value m_initializer;
-
 	Variable()
 	{
 		m_itemKind = ModuleItemKind_Variable;
@@ -154,26 +104,13 @@ struct Variable: ModuleItem
 
 //..............................................................................
 
-struct FunctionParamArray
-{
-	sl::Array<Variable*> m_array;
-	bool m_isVarArg;
-
-	FunctionParamArray()
-	{
-		m_isVarArg = false;
-	}
-};
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
 struct Function: ModuleItem
 {
-	FunctionParamArray m_paramArray;
+	sl::Array<Variable*> m_paramArray;
 
 	Function()
 	{
-		m_itemKind = ModuleItemKind_Variable;
+		m_itemKind = ModuleItemKind_Function;
 	}
 
 	virtual

@@ -40,17 +40,12 @@ postpop
 # standard definitions
 #
 
-dec    = [0-9];
-hex    = [0-9a-fA-F];
-oct    = [0-7];
-bin    = [01];
 id     = [_a-zA-Z] [_a-zA-Z0-9]*;
+atom   = [^ \t\r\n\\()#"];
 ws     = [ \t\r]+;
 nl     = '\n' @{ newLine(p + 1); };
-lc_nl  = '\\' '\r'? nl;
 esc    = '\\' [^\n];
 lit_dq = '"' ([^"\n\\] | esc)* (["\\] | nl);
-lit_sq = "'" ([^'\n\\] | esc)* (['\\] | nl);
 
 #. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 #
@@ -59,59 +54,36 @@ lit_sq = "'" ([^'\n\\] | esc)* (['\\] | nl);
 
 main := |*
 
-'goto'          { createToken(TokenKind_Goto); };
-'break'         { createToken(TokenKind_Break); };
-'return'        { createToken(TokenKind_Return); };
-'do'            { createToken(TokenKind_Do); };
-'end'           { createToken(TokenKind_End); };
-'while'         { createToken(TokenKind_While); };
-'repeat'        { createToken(TokenKind_Repeat); };
-'until'         { createToken(TokenKind_Until); };
+'function'      { createToken(TokenKind_Function); };
+'endfunction'   { createToken(TokenKind_EndFunction); };
+'macro'         { createToken(TokenKind_Macro); };
+'endmacro'      { createToken(TokenKind_EndMacro); };
+'set'           { createToken(TokenKind_Set); };
 'if'            { createToken(TokenKind_If); };
-'then'          { createToken(TokenKind_Then); };
 'elseif'        { createToken(TokenKind_ElseIf); };
 'else'          { createToken(TokenKind_Else); };
-'for'           { createToken(TokenKind_For); };
-'function'      { createToken(TokenKind_Function); };
-'local'         { createToken(TokenKind_Local); };
-'in'            { createToken(TokenKind_In); };
-'nil'           { createToken(TokenKind_Nil); };
-'false'         { createToken(TokenKind_False); };
-'true'          { createToken(TokenKind_True); };
-'or'            { createToken(TokenKind_Or); };
-'and'           { createToken(TokenKind_And); };
-'not'           { createToken(TokenKind_Not); };
-
-'::'            { createToken(TokenKind_Context); };
-'...'           { createToken(TokenKind_Ellipsis); };
-'<='            { createToken(TokenKind_Le); };
-'>='            { createToken(TokenKind_Ge); };
-'~='            { createToken(TokenKind_Ne); };
-'=='            { createToken(TokenKind_Eq); };
-'<<'            { createToken(TokenKind_Shl); };
-'>>'            { createToken(TokenKind_Shr); };
-'..'            { createToken(TokenKind_Concat); };
-'//'            { createToken(TokenKind_FloorDiv); };
+'endif'         { createToken(TokenKind_EndIf); };
+'foreach'       { createToken(TokenKind_ForEach); };
+'endforeach'    { createToken(TokenKind_EndForEach); };
+'while'         { createToken(TokenKind_While); };
+'endwhile'      { createToken(TokenKind_EndWhile); };
 
 id              { createStringToken(TokenKind_Identifier); };
-lit_sq | lit_dq { createStringToken(TokenKind_String, 1, 1); };
-dec+            { createIntegerToken (10); };
-'0' [xX] hex+   { createIntegerToken (16, 2); };
-dec+ ('.' dec*) | ([eE] [+\-]? dec+)
-				{ createFpToken (); };
+atom+           { createStringToken(TokenKind_UnquotedArg); };
+lit_dq          { createStringToken(TokenKind_QuotedArg, 1, 1); };
 
-'--!' [^\n]*    { createDoxyCommentToken(TokenKind_DoxyComment_sl); };
+'#!' [^\n]*     { createDoxyCommentToken(TokenKind_DoxyComment_sl); };
 
-'--[[!' @(Comment, 2) (any | nl)* :>> ']]'
+'#' ws* '[[!' @(Comment, 2) (any | nl)* :>> ']]'
 				{ createDoxyCommentToken(TokenKind_DoxyComment_ml); };
 
-'--[[' @(Comment, 1) (any | nl)* :>> ']]'
+'#' ws* '[[' @(Comment, 1) (any | nl)* :>> ']]'
 				;
 
-'--' [^\n]* @(Comment, 0)
+'#' [^\n]* @(Comment, 0)
 				;
 
-ws | nl ;
+ws | nl         ;
 print           { createToken(ts[0]); };
 any             { createErrorToken(ts[0]); };
 

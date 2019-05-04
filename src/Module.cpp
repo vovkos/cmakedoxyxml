@@ -14,46 +14,6 @@
 
 //..............................................................................
 
-void
-Value::clear()
-{
-	m_valueKind = ValueKind_Empty;
-	m_source.clear();
-}
-
-void
-Value::setFirstToken(
-	const Token::Pos& pos,
-	ValueKind valueKind
-	)
-{
-	ASSERT(m_valueKind == ValueKind_Empty);
-
-	m_firstTokenPos = pos;
-	m_lastTokenPos = pos;
-	m_valueKind = valueKind;
-	m_source = sl::StringRef(pos.m_p, pos.m_length);
-}
-
-void
-Value::appendSource(
-	const Token::Pos& pos,
-	ValueKind valueKind
-	)
-{
-	ASSERT(m_valueKind != ValueKind_Empty);
-
-	m_lastTokenPos = pos;
-	m_valueKind = valueKind;
-
-	ASSERT(!m_source.isEmpty());
-	const char* p = m_source.cp();
-	const char* end = pos.m_p + pos.m_length;
-	m_source = sl::StringRef(p, end - p);
-}
-
-//..............................................................................
-
 ModuleItem::ModuleItem()
 {
 	m_itemKind = ModuleItemKind_Undefined;
@@ -99,10 +59,6 @@ Variable::generateDocumentation(
 
 	itemXml->format("<memberdef kind='variable' id='%s'>\n", m_doxyBlock->getRefId ().sz());
 	itemXml->appendFormat("<name>%s</name>\n", m_name.sz());
-
-	if (!m_initializer.m_source.isEmpty())
-		itemXml->appendFormat("<initializer>= %s</initializer>\n", m_initializer.m_source.sz());
-
 	itemXml->append(m_doxyBlock->getImportString());
 	itemXml->append(m_doxyBlock->getDescriptionString());
 	itemXml->append(getLocationString());
@@ -146,10 +102,10 @@ Function::generateDocumentation(
 	itemXml->format("<memberdef kind='function' id='%s'>\n", m_doxyBlock->getRefId ().sz());
 	itemXml->appendFormat("<name>%s</name>\n", m_name.sz());
 
-	size_t count = m_paramArray.m_array.getCount();
+	size_t count = m_paramArray.getCount();
 	for (size_t i = 0; i < count; i++)
 	{
-		Variable* arg = m_paramArray.m_array[i];
+		Variable* arg = m_paramArray[i];
 
 		itemXml->appendFormat(
 			"<param>\n"
@@ -157,24 +113,11 @@ Function::generateDocumentation(
 			arg->m_name.sz()
 			);
 
-		if (!arg->m_initializer.m_source.isEmpty())
-			itemXml->appendFormat(
-				"<defval>%s</defval>\n",
-				arg->m_initializer.m_source.sz()
-				);
-
 		if (arg->m_doxyBlock)
 			itemXml->append(arg->m_doxyBlock->getDescriptionString());
 
 		itemXml->append("</param>\n");
 	}
-
-	if (m_paramArray.m_isVarArg)
-		itemXml->append(
-			"<param>\n"
-			"<type>...</type>\n"
-			"</param>\n"
-			);
 
 	itemXml->append(m_doxyBlock->getImportString());
 	itemXml->append(m_doxyBlock->getDescriptionString());
@@ -189,22 +132,18 @@ Function::generateDoxygenFilterOutput(const sl::StringRef& indent)
 	printDoxygenFilterComment();
 	printf("int %s(\n", m_name.sz());
 
-	if (!m_paramArray.m_array.isEmpty())
+	if (!m_paramArray.isEmpty())
 	{
-		m_paramArray.m_array[0]->generateDoxygenFilterOutput("\t");
+		m_paramArray[0]->generateDoxygenFilterOutput("\t");
 
-		size_t count = m_paramArray.m_array.getCount();
+		size_t count = m_paramArray.getCount();
 		for (size_t i = 1; i < count; i++)
 		{
 			printf(",\n");
-			m_paramArray.m_array[i]->generateDoxygenFilterOutput("\t");
+			m_paramArray[i]->generateDoxygenFilterOutput("\t");
 		}
 
-		printf(m_paramArray.m_isVarArg ? ",\n\t...\n\t" : "\n\t");
-	}
-	else if (m_paramArray.m_isVarArg)
-	{
-		printf("...");
+		printf("\n\t");
 	}
 
 	printf(");\n\n");

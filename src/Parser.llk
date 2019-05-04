@@ -50,15 +50,96 @@ Members2
 
 start
 nullable
+file
+	:	command*
+	;
+
+nullable
 block
-	:	command_invocation*
+	enter
+	{
+		m_scopeLevel++;
+	}
+	leave
+	{
+		m_scopeLevel--;
+	}
+	:	command*
 	;
 
-command_invocation
-	:	TokenKind_Identifier '(' argument* ')'
+command
+	:	function_command
+	|	macro_command
+	|	if_command
+	|	foreach_command
+	|	while_command
+	|	set_command
+	|	TokenKind_Identifier '(' argument* ')'
 	;
 
+class
+{
+	Token m_token;
+}
 argument
 	:	TokenKind_Identifier
-	|	TokenKind_String
+			{
+				$.m_token = $1;
+			}
+	|	TokenKind_QuotedArg
+	|	TokenKind_UnquotedArg
+	;
+
+function_command
+	:	TokenKind_Function '(' argument $n argument* ')'
+			{
+				if (!m_scopeLevel && $n.m_token.m_tokenKind == TokenKind_Identifier)
+					printf("function: %s\n", $n.m_token.m_data.m_string.sz());
+			}
+		block
+		TokenKind_EndFunction '(' argument* ')'
+	;
+
+macro_command
+	:	TokenKind_Macro '(' argument $n argument* ')'
+			{
+			if (!m_scopeLevel && $n.m_token.m_tokenKind == TokenKind_Identifier)
+					printf("macro: %s\n", $n.m_token.m_data.m_string.sz());
+			}
+		block
+		TokenKind_EndMacro '(' argument* ')'
+	;
+
+if_command
+	:	TokenKind_If '(' argument* ')'
+		block
+		(
+			TokenKind_ElseIf '(' argument* ')'
+			block
+		)*
+		(
+			TokenKind_Else '(' argument* ')'
+			block
+		)?
+		TokenKind_EndIf '(' argument* ')'
+	;
+
+foreach_command
+	:	TokenKind_ForEach '(' argument* ')'
+		block
+		TokenKind_EndForEach '(' argument* ')'
+	;
+
+while_command
+	:	TokenKind_While '(' argument* ')'
+		block
+		TokenKind_EndWhile '(' argument* ')'
+	;
+
+set_command
+	:	TokenKind_Set '(' argument $n argument* ')'
+			{
+				if (!m_scopeLevel && $n.m_token.m_tokenKind == TokenKind_Identifier)
+					printf("global variable: %s\n", $n.m_token.m_data.m_string.sz());
+			}
 	;

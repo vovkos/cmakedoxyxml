@@ -64,7 +64,7 @@ parseFile(
 
 	sl::String source((const char*)file.p(), file.getMappingSize());
 	lexer.create(fileName, source);
-	parser.create(fileName, SymbolKind_block);
+	parser.create(fileName);
 	module->addSource(source); // need to keep sources alive since we use StringRef's in module items
 
 	for (;;)
