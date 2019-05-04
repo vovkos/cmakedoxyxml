@@ -17,9 +17,15 @@ tar --strip-components=1 -xzf $CMAKE_TAR -C $CMAKE_DIR
 
 # now to official APT packages
 
-if [ "$TARGET_CPU" == "x86" ]; then
+if [ "$TARGET_CPU" != "x86" ]; then
+	sudo apt-get -qq update
+
+	sudo apt-get install -y liblua5.2-dev
+else
 	sudo dpkg --add-architecture i386
 	sudo apt-get -qq update
+
+	sudo apt-get install -y liblua5.2-dev:i386
 
 	# install g++-multilib -- in the end, after i386 packages!
 
@@ -27,7 +33,7 @@ if [ "$TARGET_CPU" == "x86" ]; then
 
 	# CMake fails to properly switch between 32-bit and 64-bit libraries on Ubuntu
 
-	echo "set (LUA_INC_DIR DISABLED)" >> paths.cmake
+	echo "set (LUA_LIB_DIR /usr/lib/i386-linux-gnu)" >> paths.cmake
 	echo "set (OPENSSL_INC_DIR DISABLED)" >> paths.cmake
 	echo "set (EXPAT_INC_DIR DISABLED)" >> paths.cmake
 fi

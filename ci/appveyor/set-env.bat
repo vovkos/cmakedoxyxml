@@ -33,18 +33,21 @@ exit -1
 :msvc10
 set TOOLCHAIN=msvc10
 set CMAKE_GENERATOR=Visual Studio 10 2010
+set LUA_TOOLCHAIN=dll10
 shift
 goto :loop
 
 :msvc12
 set TOOLCHAIN=msvc12
 set CMAKE_GENERATOR=Visual Studio 12 2013
+set LUA_TOOLCHAIN=dll12
 shift
 goto :loop
 
 :msvc14
 set TOOLCHAIN=msvc14
 set CMAKE_GENERATOR=Visual Studio 14 2015
+set LUA_TOOLCHAIN=dll14
 shift
 goto :loop
 
@@ -55,12 +58,14 @@ goto :loop
 :x86
 set TARGET_CPU=x86
 set CMAKE_GENERATOR_SUFFIX=
+set LUA_PLATFORM=Win32
 shift
 goto :loop
 
 :amd64
 set TARGET_CPU=amd64
 set CMAKE_GENERATOR_SUFFIX= Win64
+set LUA_PLATFORM=Win64
 shift
 goto :loop
 
@@ -71,6 +76,11 @@ goto :loop
 if "%TOOLCHAIN%" == "" goto :msvc14
 if "%TARGET_CPU%" == "" goto :amd64
 if "%CONFIGURATION%" == "" (set CONFIGURATION=Release)
+
+set LUA_VERSION=5.3.3
+set LUA_LIB_NAME=lua53
+set LUA_DOWNLOAD_FILE=lua-%LUA_VERSION%_%LUA_PLATFORM%_%LUA_TOOLCHAIN%_lib.zip
+set LUA_DOWNLOAD_URL=https://sourceforge.net/projects/luabinaries/files/%LUA_VERSION%/Windows%%20Libraries/Dynamic/%LUA_DOWNLOAD_FILE%/download
 
 set RAGEL_DOWNLOAD_URL=https://github.com/eloraiby/ragel-windows/raw/master/ragel.exe
 
@@ -84,5 +94,7 @@ set CMAKE_BUILD_FLAGS= ^
 	/consoleloggerparameters:Summary
 
 echo ---------------------------------------------------------------------------
+echo LUA_LIB_NAME:       %LUA_LIB_NAME%
+echo LUA_DOWNLOAD_URL:   %LUA_DOWNLOAD_URL%
 echo RAGEL_DOWNLOAD_URL: %RAGEL_DOWNLOAD_URL%
 echo ---------------------------------------------------------------------------
