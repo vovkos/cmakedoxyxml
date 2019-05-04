@@ -1,0 +1,28 @@
+//..............................................................................
+//
+//  This file is part of the CMakeDoxyXML toolkit.
+//
+//  CMakeDoxyXML is distributed under the MIT license.
+//  For details see accompanying license.txt file,
+//  the public copy of which is also available at:
+//  http://tibbo.com/downloads/archive/cmakedoxyxml/license.txt
+//
+//..............................................................................
+
+#pragma once
+
+#ifdef _DEBUG
+#	define VERSION_DEBUG_SUFFIX " Debug"
+#else
+#	define VERSION_DEBUG_SUFFIX ""
+#endif
+
+#define VERSION_MAJOR      ${CMAKEDOXYXML_VERSION_MAJOR}
+#define VERSION_MINOR      ${CMAKEDOXYXML_VERSION_MINOR}
+#define VERSION_REVISION   ${CMAKEDOXYXML_VERSION_REVISION}
+#define VERSION_FULL       MAKELONG (MAKEWORD (VERSION_REVISION, VERSION_MINOR), VERSION_MAJOR)
+#define VERSION_TAG        "${CMAKEDOXYXML_VERSION_TAG}"
+#define VERSION_TAG_SUFFIX "${CMAKEDOXYXML_VERSION_TAG_SUFFIX}"
+#define VERSION_STRING     "${CMAKEDOXYXML_VERSION_MAJOR}.${CMAKEDOXYXML_VERSION_MINOR}.${CMAKEDOXYXML_VERSION_REVISION}${CMAKEDOXYXML_VERSION_TAG_SUFFIX} (${CMAKEDOXYXML_CPU}" VERSION_DEBUG_SUFFIX ")"
+#define VERSION_COMPANY    "${CMAKEDOXYXML_VERSION_COMPANY}"
+#define VERSION_YEARS      "${CMAKEDOXYXML_VERSION_YEARS}"

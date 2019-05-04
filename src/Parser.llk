@@ -1,0 +1,64 @@
+//..............................................................................
+//
+//  This file is part of the CMakeDoxyXML toolkit.
+//
+//  CMakeDoxyXML is distributed under the MIT license.
+//  For details see accompanying license.txt file,
+//  the public copy of which is also available at:
+//  http://tibbo.com/downloads/archive/cmakedoxyxml/license.txt
+//
+//..............................................................................
+
+lookahead = 2;
+ParserClassName = Parser;
+TokenClassName = Token;
+
+Includes
+{
+	#include "Lexer.h"
+	#include "Module.h"
+}
+
+CppIncludes
+{
+	#include "Parser.llk.h"
+}
+
+Members
+{
+	Module* m_module;
+	ModuleItem* m_lastDeclaredItem;
+	dox::Parser m_doxyParser;
+	sl::String m_fileName;
+	int m_scopeLevel;
+}
+
+Members2
+{
+	Parser(Module* module);
+
+	void
+	create(
+		const sl::StringRef& fileName,
+		int startSymbolKind = StartSymbol
+		)
+	{
+		m_fileName = fileName;
+		llk::Parser<Parser, Token>::create(startSymbolKind);
+	}
+}
+
+start
+nullable
+block
+	:	command_invocation*
+	;
+
+command_invocation
+	:	TokenKind_Identifier '(' argument* ')'
+	;
+
+argument
+	:	TokenKind_Identifier
+	|	TokenKind_String
+	;

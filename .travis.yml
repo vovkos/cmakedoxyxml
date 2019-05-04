@@ -1,0 +1,49 @@
+#...............................................................................
+#
+#  This file is part of the Doxyrest toolkit.
+#
+#  Doxyrest is distributed under the MIT license.
+#  For details see accompanying license.txt file,
+#  the public copy of which is also available at:
+#  http://tibbo.com/downloads/archive/doxyrest/license.txt
+#
+#...............................................................................
+
+dist:     trusty
+sudo:     required
+language: cpp
+
+os:
+    - linux
+    - osx
+
+compiler:
+    - gcc
+    - clang
+
+env:
+    matrix:
+        - TARGET_CPU=x86 BUILD_CONFIGURATION=Debug
+        - TARGET_CPU=x86 BUILD_CONFIGURATION=Release
+        - TARGET_CPU=amd64 BUILD_CONFIGURATION=Debug
+        - TARGET_CPU=amd64 BUILD_CONFIGURATION=Release
+
+matrix:
+    exclude:
+        - os:       osx
+          compiler: gcc
+
+        - os:  osx
+          env: TARGET_CPU=x86 BUILD_CONFIGURATION=Debug
+
+        - os:  osx
+          env: TARGET_CPU=x86 BUILD_CONFIGURATION=Release
+
+install:
+    - source ci/travis/set-env.sh
+    - bash ci/travis/install-$TRAVIS_OS_NAME.sh
+    - git clone --depth 1 https://github.com/vovkos/axl
+    - git clone --depth 1 https://github.com/vovkos/graco
+
+script:
+    - bash -e ci/travis/build.sh
