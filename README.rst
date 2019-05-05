@@ -68,6 +68,9 @@ Please note that it's not necessary to do this pre-processing manually for each 
 	# scan the project directory for CMake files
 	FILE_PATTERNS = *.cmake
 
+	# cmakedoxyxml outputs C-alike code
+	EXTENSION_MAPPING = cmake=C
+
 	# ... or specify files directly
 	INPUT = main.cmake utils.cmake
 
