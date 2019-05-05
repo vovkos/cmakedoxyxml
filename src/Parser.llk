@@ -46,6 +46,63 @@ Members2
 		m_fileName = fileName;
 		llk::Parser<Parser, Token>::create(startSymbolKind);
 	}
+
+	Variable*
+	declareVariableEx(
+		ModuleItemKind itemKind,
+		const Token::Pos& pos,
+		const sl::StringRef& name
+		);
+
+	Variable*
+	declareVariable(
+		const Token::Pos& pos,
+		const sl::StringRef& name
+		)
+	{
+		return declareVariableEx(ModuleItemKind_Variable, pos, name);
+	}
+
+	Variable*
+	declareParameter(
+		const Token::Pos& pos,
+		const sl::StringRef& name
+		)
+	{
+		return declareVariableEx(ModuleItemKind_Parameter, pos, name);
+	}
+
+	Function*
+	declareFunctionEx(
+		ModuleItemKind itemKind,
+		const Token::Pos& pos,
+		const sl::StringRef& name
+		);
+
+	Function*
+	declareFunction(
+		const Token::Pos& pos,
+		const sl::StringRef& name
+		)
+	{
+		return declareFunctionEx(ModuleItemKind_Function, pos, name);
+	}
+
+	Function*
+	declareMacro(
+		const Token::Pos& pos,
+		const sl::StringRef& name
+		)
+	{
+		return declareFunctionEx(ModuleItemKind_Macro, pos, name);
+	}
+
+	void
+	finalizeDeclaration(
+		const Token::Pos& pos,
+		ModuleItem* item,
+		const sl::StringRef& name = NULL
+		);
 }
 
 start
@@ -91,23 +148,51 @@ argument
 	;
 
 function_command
-	:	TokenKind_Function '(' argument $n argument* ')'
+	local
+	{
+		Function* $function;
+	}
+	:	TokenKind_Function '('
+		argument $n
 			{
 				if (!m_scopeLevel && $n.m_token.m_tokenKind == TokenKind_Identifier)
-					printf("function: %s\n", $n.m_token.m_data.m_string.sz());
+					$function = declareFunction($1.m_pos, $n.m_token.m_data.m_string);
 			}
+		param_list<$function ? &(*$function).m_paramArray : NULL>
+		')'
 		block
 		TokenKind_EndFunction '(' argument* ')'
 	;
 
 macro_command
-	:	TokenKind_Macro '(' argument $n argument* ')'
+	local
+	{
+		Function* $macro;
+	}
+	:	TokenKind_Macro '('
+		argument $n
 			{
-			if (!m_scopeLevel && $n.m_token.m_tokenKind == TokenKind_Identifier)
-					printf("macro: %s\n", $n.m_token.m_data.m_string.sz());
+				if (!m_scopeLevel && $n.m_token.m_tokenKind == TokenKind_Identifier)
+					$macro = declareMacro($1.m_pos, $n.m_token.m_data.m_string);
 			}
+		param_list<$macro ? &(*$macro).m_paramArray : NULL>
+		')'
 		block
 		TokenKind_EndMacro '(' argument* ')'
+	;
+
+nullable
+param_list<sl::Array<Variable*>* $paramArray>
+	:	(
+			argument
+				{
+					if ($paramArray && $1.m_token.m_tokenKind == TokenKind_Identifier)
+					{
+						Variable* param = declareParameter($1.m_token.m_pos, $1.m_token.m_data.m_string);
+						$paramArray->append(param);
+					}
+				}
+		)*
 	;
 
 if_command
@@ -140,6 +225,6 @@ set_command
 	:	TokenKind_Set '(' argument $n argument* ')'
 			{
 				if (!m_scopeLevel && $n.m_token.m_tokenKind == TokenKind_Identifier)
-					printf("global variable: %s\n", $n.m_token.m_data.m_string.sz());
+					declareVariable($1.m_pos, $n.m_token.m_data.m_string);
 			}
 	;

@@ -41,7 +41,7 @@ ModuleItem::printDoxygenFilterComment(const sl::StringRef& indent)
 sl::String
 Variable::createDoxyRefId()
 {
-	sl::String refId = m_itemKind == ModuleItemKind_FunctionParam ? "param_" : "variable_";
+	sl::String refId = m_itemKind == ModuleItemKind_Parameter ? "param_" : "variable_";
 	refId += m_name;
 	refId.makeLowerCase();
 
@@ -73,7 +73,7 @@ Variable::generateDoxygenFilterOutput(const sl::StringRef& indent)
 	printDoxygenFilterComment();
 	printf("%sint %s", indent.sz(), m_name.sz());
 
-	if (m_itemKind != ModuleItemKind_FunctionParam)
+	if (m_itemKind != ModuleItemKind_Parameter)
 		printf(";\n");
 }
 
@@ -82,7 +82,8 @@ Variable::generateDoxygenFilterOutput(const sl::StringRef& indent)
 sl::String
 Function::createDoxyRefId()
 {
-	sl::String refId = "function_" + m_name;
+	sl::String refId = m_itemKind == ModuleItemKind_Macro ? "macro_" : "function_";
+	refId += m_name;
 	refId.replace('.', '_');
 	refId.replace(':', '_');
 	refId.makeLowerCase();
@@ -99,7 +100,12 @@ Function::generateDocumentation(
 {
 	ensureDoxyBlock();
 
-	itemXml->format("<memberdef kind='function' id='%s'>\n", m_doxyBlock->getRefId ().sz());
+	itemXml->format(
+		"<memberdef kind='%s' id='%s'>\n",
+		m_itemKind == ModuleItemKind_Macro ? "define" : "function",
+		m_doxyBlock->getRefId ().sz()
+		);
+
 	itemXml->appendFormat("<name>%s</name>\n", m_name.sz());
 
 	size_t count = m_paramArray.getCount();
@@ -130,6 +136,16 @@ void
 Function::generateDoxygenFilterOutput(const sl::StringRef& indent)
 {
 	printDoxygenFilterComment();
+
+	if (m_itemKind == ModuleItemKind_Macro)
+		generateMacroDoxygenFilterOutput();
+	else
+		generateFunctionDoxygenFilterOutput();
+}
+
+void
+Function::generateFunctionDoxygenFilterOutput()
+{
 	printf("int %s(\n", m_name.sz());
 
 	if (!m_paramArray.isEmpty())
@@ -149,6 +165,23 @@ Function::generateDoxygenFilterOutput(const sl::StringRef& indent)
 	printf(");\n\n");
 }
 
+void
+Function::generateMacroDoxygenFilterOutput()
+{
+	printf("#define %s(", m_name.sz());
+
+	if (!m_paramArray.isEmpty())
+	{
+		printf("%s", m_paramArray[0]->m_name.sz());
+
+		size_t count = m_paramArray.getCount();
+		for (size_t i = 1; i < count; i++)
+			printf(", %s", m_paramArray[i]->m_name.sz());
+	}
+
+	printf(")\n\n");
+}
+
 //..............................................................................
 
 bool
@@ -165,7 +198,7 @@ Module::generateGlobalNamespaceDocumentation(
 	*indexXml = "<compound kind='file' refid='global'><name>global</name></compound>\n";
 
 	*itemXml =
-		"<compounddef kind='file' id='global' language='Lua'>\n"
+		"<compounddef kind='file' id='global' language='C'>\n"
 		"<compoundname>global</compoundname>\n";
 
 	static char compoundFileHdr[] =

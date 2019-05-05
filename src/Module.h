@@ -21,8 +21,9 @@ enum ModuleItemKind
 {
 	ModuleItemKind_Undefined,
 	ModuleItemKind_Variable,
-	ModuleItemKind_FunctionParam,
+	ModuleItemKind_Parameter,
 	ModuleItemKind_Function,
+	ModuleItemKind_Macro,
 };
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -128,6 +129,12 @@ struct Function: ModuleItem
 	virtual
 	void
 	generateDoxygenFilterOutput(const sl::StringRef& indent);
+
+	void
+	generateFunctionDoxygenFilterOutput();
+
+	void
+	generateMacroDoxygenFilterOutput();
 };
 
 //..............................................................................
@@ -164,7 +171,7 @@ public:
 	bool
 	addSource(const sl::String& source)
 	{
-		return m_sourceList.insertTail(source);
+		return m_sourceList.insertTail(source) != NULL;
 	}
 
 	bool
