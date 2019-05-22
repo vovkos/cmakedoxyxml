@@ -50,6 +50,8 @@ Please note, that in *direct mode* only a small subset of Doxygen `special comma
 * ``\title``
 * ``\brief``
 * ``\details``
+* ``\param``
+* ``\return`` = ``\returns`` = ``\result``
 * ``\see`` = ``\sa``
 
 If you use **reStructuredText** inside doxy-comments, you don't really need any of the Doxygen formatting commands -- in this case the *direct mode* is the right choice. However, if you *do need* advanced Doxygen commands, then you can use Doxygen as the main processor and ``cmakedoxyxml`` as a *filter* as described in the next session.

@@ -1,15 +1,15 @@
 #...............................................................................
 #
-#  This file is part of the Doxyrest toolkit.
+#  This file is part of the CMakeDoxyXML toolkit.
 #
-#  Doxyrest is distributed under the MIT license.
+#  CMakeDoxyXML is distributed under the MIT license.
 #  For details see accompanying license.txt file,
 #  the public copy of which is also available at:
-#  http://tibbo.com/downloads/archive/doxyrest/license.txt
+#  http://tibbo.com/downloads/archive/cmakedoxyxml/license.txt
 #
 #...............................................................................
 
-dist:     trusty
+dist:     xenial
 sudo:     required
 language: cpp
 
