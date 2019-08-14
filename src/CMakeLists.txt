@@ -191,4 +191,11 @@ if(UNIX)
 	endif()
 endif()
 
+#. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+install(
+	TARGETS cmakedoxyxml
+	DESTINATION ${CMAKEDOXYXML_INSTALL_BIN_SUBDIR}
+	)
+
 #...............................................................................
