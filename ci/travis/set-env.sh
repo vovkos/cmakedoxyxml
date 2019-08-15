@@ -9,12 +9,7 @@
 #
 #...............................................................................
 
-if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-	export CMAKE_TAR=cmake-$CMAKE_VERSION-$CMAKE_OS.tar.gz
-	export CMAKE_URL=http://www.cmake.org/files/$CMAKE_VERSION_DIR/$CMAKE_TAR
-	export CMAKE_DIR=$TRAVIS_BUILD_DIR/cmake-$CMAKE_VERSION
-	export PATH=$CMAKE_DIR/bin:$PATH
-elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
+if [ "$TRAVIS_OS_NAME" == "osx" ]; then
 
 	# it's not as easy to install lua-5.2 side-by-side with lua-5.3 on OSX
 	# we better use static linking to lua as to avoid versioning issues
