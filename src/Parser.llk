@@ -9,32 +9,24 @@
 //
 //..............................................................................
 
-lookahead = 2;
-ParserClassName = Parser;
-TokenClassName = Token;
-
-Includes
+HeaderFileBegin
 {
+	#pragma once
+
 	#include "Lexer.h"
 	#include "Module.h"
 }
 
-CppIncludes
-{
-	#include "Parser.llk.h"
-}
-
 Members
 {
+protected:
 	Module* m_module;
 	ModuleItem* m_lastDeclaredItem;
 	dox::Parser m_doxyParser;
 	sl::String m_fileName;
 	int m_scopeLevel;
-}
 
-Members2
-{
+public:
 	Parser(Module* module);
 
 	void
@@ -47,6 +39,30 @@ Members2
 		llk::Parser<Parser, Token>::create(startSymbolKind);
 	}
 
+	ModuleItem*
+	getLastDeclaredItem()
+	{
+		return m_lastDeclaredItem;
+	}
+
+	int
+	getScopeLevel()
+	{
+		return m_scopeLevel;
+	}
+
+	void
+	addDoxyComment(
+		const sl::StringRef& comment,
+		const lex::LineCol& pos,
+		bool isSingleLine,
+		handle_t lastDeclaredItem
+		)
+	{
+		m_doxyParser.addComment(comment, pos, isSingleLine, lastDeclaredItem);
+	}
+
+protected:
 	Variable*
 	declareVariableEx(
 		ModuleItemKind itemKind,

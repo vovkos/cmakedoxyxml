@@ -65,7 +65,7 @@ DoxyHost::findItem(
 handle_t
 DoxyHost::getCurrentNamespace()
 {
-	return (handle_t)(intptr_t)m_parser->m_scopeLevel;
+	return (handle_t)(intptr_t)m_parser->getScopeLevel();
 }
 
 bool

@@ -14,7 +14,6 @@
 #include "DoxyHost.h"
 #include "Lexer.h"
 #include "Parser.llk.h"
-#include "Parser.llk.cpp"
 #include "version.h"
 
 #define _PRINT_USAGE_IF_NO_ARGUMENTS 1
@@ -89,11 +88,11 @@ parseFile(
 
 			if (!comment.isEmpty() && comment[0] == '<')
 			{
-				lastDeclaredItem = parser.m_lastDeclaredItem;
+				lastDeclaredItem = parser.getLastDeclaredItem();
 				comment = comment.getSubString(1);
 			}
 
-			parser.m_doxyParser.addComment(
+			parser.addDoxyComment(
 				comment,
 				token->m_pos,
 				token->m_tokenKind == TokenKind_DoxyComment_sl,
