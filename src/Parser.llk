@@ -23,7 +23,6 @@ protected:
 	Module* m_module;
 	ModuleItem* m_lastDeclaredItem;
 	dox::Parser m_doxyParser;
-	sl::String m_fileName;
 	int m_scopeLevel;
 
 public:
@@ -35,8 +34,7 @@ public:
 		int startSymbolKind = StartSymbol
 		)
 	{
-		m_fileName = fileName;
-		llk::Parser<Parser, Token>::create(startSymbolKind);
+		llk::Parser<Parser, Token>::create(fileName, startSymbolKind);
 	}
 
 	ModuleItem*
