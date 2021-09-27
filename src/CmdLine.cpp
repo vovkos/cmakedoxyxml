@@ -18,10 +18,8 @@ bool
 CmdLineParser::onSwitch(
 	SwitchKind switchKind,
 	const sl::StringRef& value
-	)
-{
-	switch (switchKind)
-	{
+) {
+	switch (switchKind) {
 	case CmdLineSwitchKind_Help:
 		m_cmdLine->m_flags |= CmdLineFlag_Help;
 		break;
@@ -47,16 +45,12 @@ CmdLineParser::onSwitch(
 }
 
 bool
-CmdLineParser::finalize()
-{
+CmdLineParser::finalize() {
 	if (m_cmdLine->m_inputFileNameList.isEmpty() &&
-		m_cmdLine->m_sourceDirList.isEmpty())
-	{
+		m_cmdLine->m_sourceDirList.isEmpty()) {
 		if (!m_cmdLine->m_flags)
 			m_cmdLine->m_flags = CmdLineFlag_Help;
-	}
-	else
-	{
+	} else {
 		if (m_cmdLine->m_outputFileName.isEmpty() && (!(m_cmdLine->m_flags & CmdLineFlag_DoxygenFilter)))
 			m_cmdLine->m_outputFileName = g_defaultOutputFileName;
 	}

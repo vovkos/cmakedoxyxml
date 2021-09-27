@@ -14,24 +14,21 @@
 
 //..............................................................................
 
-ModuleItem::ModuleItem()
-{
+ModuleItem::ModuleItem() {
 	m_itemKind = ModuleItemKind_Undefined;
 	m_module = NULL;
 	m_doxyBlock = NULL;
 }
 
 dox::Block*
-ModuleItem::ensureDoxyBlock()
-{
+ModuleItem::ensureDoxyBlock() {
 	dox::Block* block = m_module->getDoxyHost()->getItemBlock(this);
 	ASSERT(block == m_doxyBlock);
 	return block;
 }
 
 void
-ModuleItem::printDoxygenFilterComment(const sl::StringRef& indent)
-{
+ModuleItem::printDoxygenFilterComment(const sl::StringRef& indent) {
 	if (m_doxyBlock)
 		printf("%s/*! %s */\n", indent.sz(), m_doxyBlock->getSource().getTrimmedString().sz());
 }
@@ -39,8 +36,7 @@ ModuleItem::printDoxygenFilterComment(const sl::StringRef& indent)
 //..............................................................................
 
 sl::String
-Variable::createDoxyRefId()
-{
+Variable::createDoxyRefId() {
 	sl::String refId = m_itemKind == ModuleItemKind_Parameter ? "param_" : "variable_";
 	refId += m_name;
 	refId.makeLowerCase();
@@ -53,8 +49,7 @@ Variable::generateDocumentation(
 	const sl::StringRef& outputDir,
 	sl::String* itemXml,
 	sl::String* indexXml
-	)
-{
+) {
 	ensureDoxyBlock();
 
 	itemXml->format("<memberdef kind='variable' id='%s'>\n", m_doxyBlock->getRefId ().sz());
@@ -68,8 +63,7 @@ Variable::generateDocumentation(
 }
 
 void
-Variable::generateDoxygenFilterOutput(const sl::StringRef& indent)
-{
+Variable::generateDoxygenFilterOutput(const sl::StringRef& indent) {
 	printDoxygenFilterComment();
 	printf("%sint %s", indent.sz(), m_name.sz());
 
@@ -80,8 +74,7 @@ Variable::generateDoxygenFilterOutput(const sl::StringRef& indent)
 //..............................................................................
 
 sl::String
-Function::createDoxyRefId()
-{
+Function::createDoxyRefId() {
 	sl::String refId = m_itemKind == ModuleItemKind_Macro ? "macro_" : "function_";
 	refId += m_name;
 	refId.replace('.', '_');
@@ -96,28 +89,26 @@ Function::generateDocumentation(
 	const sl::StringRef& outputDir,
 	sl::String* itemXml,
 	sl::String* indexXml
-	)
-{
+) {
 	ensureDoxyBlock();
 
 	itemXml->format(
 		"<memberdef kind='%s' id='%s'>\n",
 		m_itemKind == ModuleItemKind_Macro ? "define" : "function",
 		m_doxyBlock->getRefId ().sz()
-		);
+	);
 
 	itemXml->appendFormat("<name>%s</name>\n", m_name.sz());
 
 	size_t count = m_paramArray.getCount();
-	for (size_t i = 0; i < count; i++)
-	{
+	for (size_t i = 0; i < count; i++) {
 		Variable* arg = m_paramArray[i];
 
 		itemXml->appendFormat(
 			"<param>\n"
 			"<declname>%s</declname>\n",
 			arg->m_name.sz()
-			);
+		);
 
 		if (arg->m_doxyBlock)
 			itemXml->append(arg->m_doxyBlock->getDescriptionString());
@@ -133,8 +124,7 @@ Function::generateDocumentation(
 }
 
 void
-Function::generateDoxygenFilterOutput(const sl::StringRef& indent)
-{
+Function::generateDoxygenFilterOutput(const sl::StringRef& indent) {
 	printDoxygenFilterComment();
 
 	if (m_itemKind == ModuleItemKind_Macro)
@@ -144,17 +134,14 @@ Function::generateDoxygenFilterOutput(const sl::StringRef& indent)
 }
 
 void
-Function::generateFunctionDoxygenFilterOutput()
-{
+Function::generateFunctionDoxygenFilterOutput() {
 	printf("int %s(\n", m_name.sz());
 
-	if (!m_paramArray.isEmpty())
-	{
+	if (!m_paramArray.isEmpty()) {
 		m_paramArray[0]->generateDoxygenFilterOutput("\t");
 
 		size_t count = m_paramArray.getCount();
-		for (size_t i = 1; i < count; i++)
-		{
+		for (size_t i = 1; i < count; i++) {
 			printf(",\n");
 			m_paramArray[i]->generateDoxygenFilterOutput("\t");
 		}
@@ -166,12 +153,10 @@ Function::generateFunctionDoxygenFilterOutput()
 }
 
 void
-Function::generateMacroDoxygenFilterOutput()
-{
+Function::generateMacroDoxygenFilterOutput() {
 	printf("#define %s(", m_name.sz());
 
-	if (!m_paramArray.isEmpty())
-	{
+	if (!m_paramArray.isEmpty()) {
 		printf("%s", m_paramArray[0]->m_name.sz());
 
 		size_t count = m_paramArray.getCount();
@@ -189,8 +174,7 @@ Module::generateGlobalNamespaceDocumentation(
 	const sl::StringRef& outputDir,
 	sl::String* itemXml,
 	sl::String* indexXml
-	)
-{
+) {
 	bool result;
 
 	dox::Host* host = m_doxyModule.getHost();
@@ -211,8 +195,7 @@ Module::generateGlobalNamespaceDocumentation(
 	sl::String memberXml;
 
 	sl::StringHashTableIterator<ModuleItem*> it = m_itemMap.getHead();
-	for (; it; it++)
-	{
+	for (; it; it++) {
 		ModuleItem* item = it->m_value;
 
 		result = item->generateDocumentation(outputDir, &memberXml, indexXml);
@@ -238,8 +221,7 @@ Module::generateGlobalNamespaceDocumentation(
 }
 
 void
-Module::generateDoxygenFilterOutput()
-{
+Module::generateDoxygenFilterOutput() {
 	sl::StringHashTableIterator<ModuleItem*> it = m_itemMap.getHead();
 	for (; it; it++)
 		it->m_value->generateDoxygenFilterOutput();

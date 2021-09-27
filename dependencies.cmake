@@ -15,7 +15,7 @@ set(
 	AXL_CMAKE_DIR
 	GRACO_CMAKE_DIR
 	RAGEL_EXE
-	)
+)
 
 set(
 	AXL_IMPORT_LIST
@@ -33,6 +33,6 @@ set(
 	AXL_IMPORT_DIR_LIST
 
 	${GRACO_CMAKE_DIR}
-	)
+)
 
 #...............................................................................

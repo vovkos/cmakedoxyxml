@@ -20,7 +20,7 @@ set(
 	Lexer.h
 	Module.h
 	version.h.in
-	)
+)
 
 set(
 	APP_CPP_LIST
@@ -30,17 +30,17 @@ set(
 	Lexer.cpp
 	Parser.cpp
 	Module.cpp
-	)
+)
 
 set(
 	APP_RL_LIST
 	Lexer.rl
-	)
+)
 
 set(
 	APP_LLK_LIST
 	Parser.llk
-	)
+)
 
 source_group(
 	app
@@ -49,7 +49,7 @@ source_group(
 	${APP_CPP_LIST}
 	${APP_RL_LIST}
 	${APP_LLK_LIST}
-	)
+)
 
 #. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 #
@@ -59,13 +59,13 @@ source_group(
 set(
 	RES_RC_LIST
 	res.rc
-	)
+)
 
 source_group(
 	res
 	FILES
 	${RES_RC_LIST}
-	)
+)
 
 #. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 #
@@ -80,12 +80,12 @@ axl_push_and_set(CMAKE_CURRENT_BINARY_DIR ${GEN_DIR})
 configure_file(
 	version.h.in
 	${GEN_DIR}/version.h
-	)
+)
 
 add_ragel_step(
 	Lexer.rl.cpp
 	Lexer.rl
-	)
+)
 
 add_graco_double_step(
 	Parser.llk.h
@@ -93,7 +93,7 @@ add_graco_double_step(
 	CppParser.h.in
 	CppParser.cpp.in
 	Parser.llk
-	)
+)
 
 axl_pop(CMAKE_CURRENT_BINARY_DIR)
 
@@ -101,13 +101,13 @@ set(
 	GEN_H_LIST
 	${GEN_DIR}/version.h
 	${GEN_DIR}/Parser.llk.h
-	)
+)
 
 set(
 	GEN_CPP_LIST
 	${GEN_DIR}/Lexer.rl.cpp
 	# ${GEN_DIR}/Parser.llk.cpp  # currently, cmake can't handle double-file output
-	)
+)
 
 axl_exclude_from_build(${GEN_CPP_LIST})  # include "*.rl.cpp" & "*.llk.cpp" manually
 
@@ -116,7 +116,7 @@ source_group(
 	FILES
 	${GEN_H_LIST}
 	${GEN_CPP_LIST}
-	)
+)
 
 #. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 #
@@ -131,7 +131,7 @@ source_group(
 	FILES
 	${PCH_H}
 	${PCH_CPP}
-	)
+)
 
 #...............................................................................
 #
@@ -143,11 +143,11 @@ include_directories(
 	${AXL_INC_DIR}
 	${CMAKE_CURRENT_LIST_DIR}
 	${GEN_DIR}
-	)
+)
 
 link_directories(
 	${AXL_LIB_DIR}
-	)
+)
 
 add_executable(
 	cmakedoxyxml
@@ -160,13 +160,13 @@ add_executable(
 	${RES_RC_LIST}
 	${GEN_H_LIST}
 	${GEN_CPP_LIST}
-	)
+)
 
 axl_set_pch(
 	cmakedoxyxml
 	${PCH_H}
 	${PCH_CPP}
-	)
+)
 
 target_link_libraries(
 	cmakedoxyxml
@@ -174,20 +174,20 @@ target_link_libraries(
 	axl_io
 	axl_dox
 	axl_core
-	)
+)
 
 if(UNIX)
 	target_link_libraries(
 		cmakedoxyxml
 		pthread
 		dl
-		)
+	)
 
 	if(NOT APPLE)
 		target_link_libraries(
 			cmakedoxyxml
 			rt
-			)
+		)
 	endif()
 endif()
 
@@ -196,6 +196,6 @@ endif()
 install(
 	TARGETS cmakedoxyxml
 	DESTINATION ${CMAKEDOXYXML_INSTALL_BIN_SUBDIR}
-	)
+)
 
 #...............................................................................

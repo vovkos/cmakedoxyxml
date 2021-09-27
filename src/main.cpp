@@ -22,8 +22,7 @@
 //..............................................................................
 
 void
-printVersion()
-{
+printVersion() {
 	printf(
 		"cmakedoxyxml v%d.%d.%d (%s%s)\n",
 		VERSION_MAJOR,
@@ -31,12 +30,11 @@ printVersion()
 		VERSION_REVISION,
 		AXL_CPU_STRING,
 		AXL_DEBUG_SUFFIX
-		);
+	);
 }
 
 void
-printUsage()
-{
+printUsage() {
 	printVersion();
 
 	sl::String helpString = CmdLineSwitchTable::getHelpString();
@@ -47,8 +45,7 @@ bool
 parseFile(
 	const sl::StringRef& fileName,
 	Module* module
-	)
-{
+) {
 	io::SimpleMappedFile file;
 
 	bool result = file.open(fileName, io::FileFlag_ReadOnly);
@@ -66,15 +63,13 @@ parseFile(
 	parser.create(fileName);
 	module->addSource(source); // need to keep sources alive since we use StringRef's in module items
 
-	for (;;)
-	{
+	for (;;) {
 		const Token* token = lexer.getToken();
 
 		sl::StringRef comment;
 		ModuleItem* lastDeclaredItem;
 
-		switch (token->m_token)
-		{
+		switch (token->m_token) {
 		case TokenKind_Error:
 			err::setFormatStringError("invalid character '\\x%02x'", (uchar_t) token->m_data.m_integer);
 			lex::pushSrcPosError(fileName, token->m_pos);
@@ -86,8 +81,7 @@ parseFile(
 
 			lastDeclaredItem = NULL;
 
-			if (!comment.isEmpty() && comment[0] == '<')
-			{
+			if (!comment.isEmpty() && comment[0] == '<') {
 				lastDeclaredItem = parser.getLastDeclaredItem();
 				comment = comment.getSubString(1);
 			}
@@ -97,14 +91,13 @@ parseFile(
 				token->m_pos,
 				token->m_tokenKind == TokenKind_DoxyComment_sl,
 				lastDeclaredItem
-				);
+			);
 
 			break;
 
 		default:
 			result = parser.parseToken(token);
-			if (!result)
-			{
+			if (!result) {
 				lex::ensureSrcPosError(fileName, token->m_pos);
 				return false;
 			}
@@ -120,8 +113,7 @@ parseFile(
 }
 
 bool
-run(CmdLine* cmdLine)
-{
+run(CmdLine* cmdLine) {
 	static char cmakeSuffix[] = ".cmake";
 	static char doxSuffix[] = ".dox";
 
@@ -131,8 +123,7 @@ run(CmdLine* cmdLine)
 	Module module(&doxyHost);
 
 	sl::ConstBoxIterator<sl::String> it = cmdLine->m_inputFileNameList.getHead();
-	for (; it; it++)
-	{
+	for (; it; it++) {
 		const sl::String& fileName = *it;
 
 		if (!(cmdLine->m_flags & CmdLineFlag_DoxygenFilter))
@@ -144,8 +135,7 @@ run(CmdLine* cmdLine)
 	}
 
 	it = cmdLine->m_sourceDirList.getHead();
-	for (; it; it++)
-	{
+	for (; it; it++) {
 		sl::String dir = *it;
 		if (dir.isEmpty())
 			continue;
@@ -155,20 +145,17 @@ run(CmdLine* cmdLine)
 
 		io::FileEnumerator fileEnum;
 		bool result = fileEnum.openDir(dir);
-		if (!result)
-		{
+		if (!result) {
 			printf("warning: %s\n", err::getLastErrorDescription().sz());
 			continue;
 		}
 
-		while (fileEnum.hasNextFile())
-		{
+		while (fileEnum.hasNextFile()) {
 			sl::String filePath = dir + fileEnum.getNextFileName();
 			if (io::isDir(filePath))
 				continue;
 
-			if (filePath.isSuffix(cmakeSuffix) || filePath.isSuffix(doxSuffix))
-			{
+			if (filePath.isSuffix(cmakeSuffix) || filePath.isSuffix(doxSuffix)) {
 				result = parseFile(filePath, &module);
 				if (!result)
 					return false;
@@ -197,13 +184,13 @@ int
 wmain(
 	int argc,
 	wchar_t* argv[]
-	)
+)
 #else
 int
 main(
 	int argc,
 	char* argv[]
-	)
+)
 #endif
 {
 	bool result;
@@ -219,16 +206,14 @@ main(
 	CmdLineParser parser(&cmdLine);
 
 #if _PRINT_USAGE_IF_NO_ARGUMENTS
-	if (argc < 2)
-	{
+	if (argc < 2) {
 		printUsage();
 		return 0;
 	}
 #endif
 
 	result = parser.parse(argc, argv);
-	if (!result)
-	{
+	if (!result) {
 		fprintf(stderr, "error parsing command line: %s\n", err::getLastErrorDescription().sz());
 		return -1;
 	}
@@ -237,11 +222,9 @@ main(
 		printUsage();
 	else if (cmdLine.m_flags & CmdLineFlag_Version)
 		printVersion();
-	else
-	{
+	else {
 		result = run(&cmdLine);
-		if (!result)
-		{
+		if (!result) {
 			fprintf(stderr, "error: %s\n", err::getLastErrorDescription().sz());
 			return -1;
 		}

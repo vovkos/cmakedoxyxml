@@ -17,15 +17,13 @@
 //..............................................................................
 
 dox::Block*
-DoxyHost::findItemBlock(handle_t item0)
-{
+DoxyHost::findItemBlock(handle_t item0) {
 	ModuleItem* item = (ModuleItem*)item0;
 	return item->m_doxyBlock;
 }
 
 dox::Block*
-DoxyHost::getItemBlock(handle_t item0)
-{
+DoxyHost::getItemBlock(handle_t item0) {
 	ModuleItem* item = (ModuleItem*)item0;
 	if (!item->m_doxyBlock)
 		item->m_doxyBlock = m_module->m_doxyModule.createBlock(item);
@@ -37,8 +35,7 @@ void
 DoxyHost::setItemBlock(
 	handle_t item0,
 	dox::Block* block
-	)
-{
+) {
 	ModuleItem* item = (ModuleItem*)item0;
 	item->m_doxyBlock = block;
 
@@ -47,8 +44,7 @@ DoxyHost::setItemBlock(
 }
 
 sl::String
-DoxyHost::createItemRefId(handle_t item0)
-{
+DoxyHost::createItemRefId(handle_t item0) {
 	ModuleItem* item = (ModuleItem*)item0;
 	return item->createDoxyRefId();
 }
@@ -57,14 +53,12 @@ handle_t
 DoxyHost::findItem(
 	const sl::StringRef& name,
 	size_t overloadIdx
-	)
-{
+) {
 	return m_module->findItem(name);
 }
 
 handle_t
-DoxyHost::getCurrentNamespace()
-{
+DoxyHost::getCurrentNamespace() {
 	return (handle_t)(intptr_t)m_parser->getScopeLevel();
 }
 
@@ -73,8 +67,7 @@ DoxyHost::generateGlobalNamespaceDocumentation(
 	const sl::StringRef& outputDir,
 	sl::String* itemXml,
 	sl::String* indexXml
-	)
-{
+) {
 	return m_module->generateGlobalNamespaceDocumentation(outputDir, itemXml, indexXml);
 }
 

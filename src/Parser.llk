@@ -9,16 +9,14 @@
 //
 //..............................................................................
 
-HeaderFileBegin
-{
+HeaderFileBegin {
 	#pragma once
 
 	#include "Lexer.h"
 	#include "Module.h"
 }
 
-Members
-{
+Members {
 protected:
 	Module* m_module;
 	ModuleItem* m_lastDeclaredItem;
@@ -32,20 +30,17 @@ public:
 	create(
 		const sl::StringRef& fileName,
 		int startSymbolKind = StartSymbol
-		)
-	{
+	) {
 		llk::Parser<Parser, Token>::create(fileName, startSymbolKind);
 	}
 
 	ModuleItem*
-	getLastDeclaredItem()
-	{
+	getLastDeclaredItem() {
 		return m_lastDeclaredItem;
 	}
 
 	int
-	getScopeLevel()
-	{
+	getScopeLevel() {
 		return m_scopeLevel;
 	}
 
@@ -55,8 +50,7 @@ public:
 		const lex::LineCol& pos,
 		bool isSingleLine,
 		handle_t lastDeclaredItem
-		)
-	{
+	) {
 		m_doxyParser.addComment(comment, pos, isSingleLine, lastDeclaredItem);
 	}
 
@@ -66,14 +60,13 @@ protected:
 		ModuleItemKind itemKind,
 		const Token::Pos& pos,
 		const sl::StringRef& name
-		);
+	);
 
 	Variable*
 	declareVariable(
 		const Token::Pos& pos,
 		const sl::StringRef& name
-		)
-	{
+	) {
 		return declareVariableEx(ModuleItemKind_Variable, pos, name);
 	}
 
@@ -81,8 +74,7 @@ protected:
 	declareParameter(
 		const Token::Pos& pos,
 		const sl::StringRef& name
-		)
-	{
+	) {
 		return declareVariableEx(ModuleItemKind_Parameter, pos, name);
 	}
 
@@ -91,14 +83,13 @@ protected:
 		ModuleItemKind itemKind,
 		const Token::Pos& pos,
 		const sl::StringRef& name
-		);
+	);
 
 	Function*
 	declareFunction(
 		const Token::Pos& pos,
 		const sl::StringRef& name
-		)
-	{
+	) {
 		return declareFunctionEx(ModuleItemKind_Function, pos, name);
 	}
 
@@ -106,8 +97,7 @@ protected:
 	declareMacro(
 		const Token::Pos& pos,
 		const sl::StringRef& name
-		)
-	{
+	) {
 		return declareFunctionEx(ModuleItemKind_Macro, pos, name);
 	}
 
@@ -116,7 +106,7 @@ protected:
 		const Token::Pos& pos,
 		ModuleItem* item,
 		const sl::StringRef& name = NULL
-		);
+	);
 }
 
 start
@@ -127,12 +117,10 @@ file
 
 nullable
 block
-	enter
-	{
+	enter {
 		m_scopeLevel++;
 	}
-	leave
-	{
+	leave {
 		m_scopeLevel--;
 	}
 	:	command*
@@ -148,8 +136,7 @@ command
 	|	TokenKind_Identifier '(' argument* ')'
 	;
 
-class
-{
+struct {
 	Token m_token;
 }
 argument
@@ -162,8 +149,7 @@ argument
 	;
 
 function_command
-	local
-	{
+	local {
 		Function* $function;
 	}
 	:	TokenKind_Function '('
@@ -179,8 +165,7 @@ function_command
 	;
 
 macro_command
-	local
-	{
+	local {
 		Function* $macro;
 	}
 	:	TokenKind_Macro '('

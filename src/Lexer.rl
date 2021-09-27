@@ -25,13 +25,11 @@ write data;
 # prepush / postpop (for fcall/fret)
 #
 
-prepush
-{
+prepush {
 	stack = prePush();
 }
 
-postpop
-{
+postpop {
 	postPop();
 }
 
@@ -94,14 +92,12 @@ any             { createErrorToken(ts[0]); };
 //..............................................................................
 
 void
-Lexer::init()
-{
+Lexer::init() {
 	%% write init;
 }
 
 void
-Lexer::exec()
-{
+Lexer::exec() {
 	%% write exec;
 }
 

@@ -13,8 +13,7 @@
 
 //..............................................................................
 
-enum TokenKind
-{
+enum TokenKind {
 	// common tokens
 
 	TokenKind_Eof        = 0,
@@ -44,8 +43,7 @@ enum TokenKind
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-enum TokenChannelMask
-{
+enum TokenChannelMask {
 	TokenChannelMask_Main        = lex::TokenChannelMask_Main, // 0x01,
 	TokenChannelMask_DoxyComment = 0x02,
 	TokenChannelMask_All         = -1,
@@ -90,8 +88,7 @@ typedef lex::RagelToken<TokenKind, TokenName, lex::StdTokenData> Token;
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-class Lexer: public lex::RagelLexer<Lexer, Token>
-{
+class Lexer: public lex::RagelLexer<Lexer, Token> {
 	friend class lex::RagelLexer<Lexer, Token>;
 
 protected:
@@ -100,7 +97,7 @@ protected:
 		int TokenKind,
 		size_t left = 0,
 		size_t right = 0
-		);
+	);
 
 	Token*
 	createDoxyCommentToken(int tokenKind);

@@ -17,8 +17,7 @@ class Module;
 
 //..............................................................................
 
-enum ModuleItemKind
-{
+enum ModuleItemKind {
 	ModuleItemKind_Undefined,
 	ModuleItemKind_Variable,
 	ModuleItemKind_Parameter,
@@ -28,8 +27,7 @@ enum ModuleItemKind
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-struct ModuleItem: sl::ListLink
-{
+struct ModuleItem: sl::ListLink {
 	ModuleItemKind m_itemKind;
 	Module* m_module;
 	sl::String m_fileName;
@@ -40,9 +38,7 @@ struct ModuleItem: sl::ListLink
 	ModuleItem();
 
 	virtual
-	~ModuleItem()
-	{
-	}
+	~ModuleItem() {}
 
 	dox::Block*
 	ensureDoxyBlock();
@@ -57,20 +53,19 @@ struct ModuleItem: sl::ListLink
 		const sl::StringRef& outputDir,
 		sl::String* itemXml,
 		sl::String* indexXml
-		) = 0;
+	) = 0;
 
 	virtual
 	void
 	generateDoxygenFilterOutput(const sl::StringRef& indent = "") = 0;
 
 	sl::String
-	getLocationString()
-	{
+	getLocationString() {
 		return sl::formatString("<location file='%s' line='%d' col='%d'/>\n",
 			m_fileName.sz(),
 			m_pos.m_line + 1,
 			m_pos.m_col + 1
-			);
+		);
 	}
 
 	void
@@ -79,10 +74,8 @@ struct ModuleItem: sl::ListLink
 
 //..............................................................................
 
-struct Variable: ModuleItem
-{
-	Variable()
-	{
+struct Variable: ModuleItem {
+	Variable() {
 		m_itemKind = ModuleItemKind_Variable;
 	}
 
@@ -96,7 +89,7 @@ struct Variable: ModuleItem
 		const sl::StringRef& outputDir,
 		sl::String* itemXml,
 		sl::String* indexXml
-		);
+	);
 
 	virtual
 	void
@@ -105,12 +98,10 @@ struct Variable: ModuleItem
 
 //..............................................................................
 
-struct Function: ModuleItem
-{
+struct Function: ModuleItem {
 	sl::Array<Variable*> m_paramArray;
 
-	Function()
-	{
+	Function() {
 		m_itemKind = ModuleItemKind_Function;
 	}
 
@@ -124,7 +115,7 @@ struct Function: ModuleItem
 		const sl::StringRef& outputDir,
 		sl::String* itemXml,
 		sl::String* indexXml
-		);
+	);
 
 	virtual
 	void
@@ -139,8 +130,7 @@ struct Function: ModuleItem
 
 //..............................................................................
 
-class Module
-{
+class Module {
 	friend class Parser;
 
 protected:
@@ -153,24 +143,19 @@ public:
 
 public:
 	Module(dox::Host* doxyHost):
-		m_doxyModule(doxyHost)
-	{
-	}
+		m_doxyModule(doxyHost) {}
 
-	dox::Host* getDoxyHost()
-	{
+	dox::Host* getDoxyHost() {
 		return m_doxyModule.getHost();
 	}
 
 	ModuleItem*
-	findItem(const sl::StringRef& name)
-	{
+	findItem(const sl::StringRef& name) {
 		return m_itemMap.findValue(name, NULL);
 	}
 
 	bool
-	addSource(const sl::String& source)
-	{
+	addSource(const sl::String& source) {
 		return m_sourceList.insertTail(source) != NULL;
 	}
 
@@ -179,7 +164,7 @@ public:
 		const sl::StringRef& outputDir,
 		sl::String* itemXml,
 		sl::String* indexXml
-		);
+	);
 
 	void
 	generateDoxygenFilterOutput();

@@ -16,15 +16,13 @@ class Parser;
 
 //..............................................................................
 
-class DoxyHost: public dox::Host
-{
+class DoxyHost: public dox::Host {
 protected:
 	Module* m_module;
 	Parser* m_parser;
 
 public:
-	DoxyHost()
-	{
+	DoxyHost() {
 		setup(NULL, NULL);
 	}
 
@@ -32,8 +30,7 @@ public:
 	setup(
 		Module* module,
 		Parser* parser
-		)
-	{
+	) {
 		m_module = module;
 		m_parser = parser;
 	}
@@ -51,7 +48,7 @@ public:
 	setItemBlock(
 		handle_t item,
 		dox::Block* block
-		);
+	);
 
 	virtual
 	sl::String
@@ -59,8 +56,7 @@ public:
 
 	virtual
 	sl::StringRef
-	getItemCompoundElementName(handle_t item)
-	{
+	getItemCompoundElementName(handle_t item) {
 		return NULL; // no compounds in cmake
 	}
 
@@ -69,7 +65,7 @@ public:
 	findItem(
 		const sl::StringRef& name,
 		size_t overloadIdx
-		);
+	);
 
 	virtual
 	handle_t
@@ -81,7 +77,7 @@ public:
 		const sl::StringRef& outputDir,
 		sl::String* itemXml,
 		sl::String* indexXml
-		);
+	);
 };
 
 //..............................................................................

@@ -20,8 +20,7 @@ Lexer::createStringToken(
 	int tokenKind,
 	size_t left,
 	size_t right
-	)
-{
+) {
 	Token* token = createToken(tokenKind);
 	ASSERT(token->m_pos.m_length >= left + right);
 
@@ -31,15 +30,13 @@ Lexer::createStringToken(
 }
 
 Token*
-Lexer::createDoxyCommentToken(int tokenKind)
-{
+Lexer::createDoxyCommentToken(int tokenKind) {
 	ASSERT(te - ts >= 3 && ts[0] == '-' && ts[1] == '-');
 
 	size_t left = 0;
 	size_t right = 0;
 
-	switch (tokenKind)
-	{
+	switch (tokenKind) {
 	case TokenKind_DoxyComment_sl: // --!
 		ASSERT(ts[2] == '!');
 		left = 3;
