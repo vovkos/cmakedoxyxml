@@ -124,13 +124,11 @@ source_group(
 #
 
 set(PCH_H   pch.h)
-set(PCH_CPP pch.cpp)
 
 source_group(
 	pch
 	FILES
 	${PCH_H}
-	${PCH_CPP}
 )
 
 #...............................................................................
@@ -152,7 +150,6 @@ link_directories(
 add_executable(
 	cmakedoxyxml
 	${PCH_H}
-	${PCH_CPP}
 	${APP_H_LIST}
 	${APP_CPP_LIST}
 	${APP_RL_LIST}
@@ -162,10 +159,10 @@ add_executable(
 	${GEN_CPP_LIST}
 )
 
-axl_set_pch(
+target_precompile_headers(
 	cmakedoxyxml
+	PRIVATE
 	${PCH_H}
-	${PCH_CPP}
 )
 
 target_link_libraries(
