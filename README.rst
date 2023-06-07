@@ -13,8 +13,6 @@ CMakeDoxyXML
 ==========
 .. image:: https://travis-ci.org/vovkos/cmakedoxyxml.svg?branch=master
 	:target: https://travis-ci.org/vovkos/cmakedoxyxml
-.. image:: https://ci.appveyor.com/api/projects/status/sldqdlltvcbmht7b?svg=true
-	:target: https://ci.appveyor.com/project/vovkos/cmakedoxyxml
 
 Abstract
 --------
