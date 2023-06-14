@@ -171,6 +171,7 @@ target_link_libraries(
 	axl_lex
 	axl_io
 	axl_dox
+	axl_mem_new
 	axl_core
 )
 
