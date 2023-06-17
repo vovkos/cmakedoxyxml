@@ -53,9 +53,7 @@ Lexer::createDoxyCommentToken(int tokenKind) {
 		ASSERT(false);
 	}
 
-	Token* token = createStringToken(tokenKind, left, right);
-	token->m_channelMask = TokenChannelMask_DoxyComment;
-	return token;
+	return createStringToken(tokenKind, left, right);
 }
 
 //..............................................................................

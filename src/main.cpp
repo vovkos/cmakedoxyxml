@@ -53,28 +53,22 @@ parseFile(
 		return false;
 
 	Lexer lexer;
-	lexer.m_channelMask = TokenChannelMask_All; // include doxygen comments
-
 	Parser parser(module);
 	((DoxyHost*)module->getDoxyHost())->setup(module, &parser);
 
 	sl::String source((const char*)file.p(), file.getMappingSize());
-	lexer.create(fileName, source);
+	lexer.create(source);
 	parser.create(fileName);
 	module->addSource(source); // need to keep sources alive since we use StringRef's in module items
 
-	for (;;) {
+	bool isEof = false;
+	do {
 		const Token* token = lexer.getToken();
 
 		sl::StringRef comment;
 		ModuleItem* lastDeclaredItem;
 
 		switch (token->m_token) {
-		case TokenKind_Error:
-			err::setFormatStringError("invalid character '\\x%02x'", (uchar_t) token->m_data.m_integer);
-			lex::pushSrcPosError(fileName, token->m_pos);
-			return false;
-
 		case TokenKind_DoxyComment_sl:
 		case TokenKind_DoxyComment_ml:
 			comment = token->m_data.m_string;
@@ -93,21 +87,19 @@ parseFile(
 				lastDeclaredItem
 			);
 
+			lexer.nextToken();
 			break;
+
+		case TokenKind_Eof:
+			isEof = true;
+			// fall through; EOF token must be parsed
 
 		default:
-			result = parser.parseToken(token);
-			if (!result) {
-				lex::ensureSrcPosError(fileName, token->m_pos);
+			result = parser.consumeToken(lexer.takeToken());
+			if (!result)
 				return false;
-			}
 		}
-
-		if (token->m_token == TokenKind_Eof) // EOF token must be parsed
-			break;
-
-		lexer.nextToken();
-	}
+	} while (!isEof);
 
 	return true;
 }

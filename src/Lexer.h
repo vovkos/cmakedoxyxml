@@ -43,15 +43,6 @@ enum TokenKind {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-enum TokenChannelMask {
-	TokenChannelMask_Main        = lex::TokenChannelMask_Main, // 0x01,
-	TokenChannelMask_DoxyComment = 0x02,
-	TokenChannelMask_All         = -1,
-};
-
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
 AXL_LEX_BEGIN_TOKEN_NAME_MAP(TokenName)
 
 	// common tokens
