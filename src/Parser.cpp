@@ -31,7 +31,7 @@ Parser::declareVariableEx(
 	if (itemKind == ModuleItemKind_Variable && m_module->m_itemMap.find(name)) // re-declaration
 		return NULL;
 
-	Variable* variable = AXL_MEM_NEW(Variable);
+	Variable* variable = new Variable;
 	variable->m_itemKind = itemKind;
 	variable->m_name = name;
 
@@ -53,7 +53,7 @@ Parser::declareFunctionEx(
 	if (m_module->m_itemMap.find(name)) // re-declaration
 		return NULL;
 
-	Function* function = AXL_MEM_NEW(Function);
+	Function* function = new Function;
 	function->m_itemKind = itemKind;
 	function->m_name = name;
 	finalizeDeclaration(pos, function, name);
