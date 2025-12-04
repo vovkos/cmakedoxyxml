@@ -27,3 +27,5 @@ set(CMAKEDOXYXML_INSTALL_BIN_SUBDIR bin)
 add_subdirectory(src)
 
 #...............................................................................
+
+axl_copy_msvc_asan_dll()
